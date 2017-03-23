@@ -6,6 +6,8 @@
 #include <cassert>
 #include <iostream>
 
+using namespace std;
+
 template <typename MinMaxQueue>
 class BucketPQ
 {
@@ -67,7 +69,6 @@ public:
         do
         {
             jcol = head[optimum];
-	    //std::cout<<" Head[opt]  "<< jcol;
             if(jcol > _invalid) // BUG LOCATION: RISK,
             {             // As we are using zero based indexing in
                           // our PriorityQueue Implementation. So ,be
@@ -78,7 +79,6 @@ public:
             optimum = cmp_fun.next_op(optimum);
             assert(optimum > _invalid);
         }while(1);
-	//std::cout<<", "<<jcol<<" "<<v_priority[jcol]<< " "<< optimum;
         assert(v_priority[jcol] == optimum);
         return Item( jcol, v_priority[jcol] );
     }
@@ -128,6 +128,7 @@ public:
         {
             prev[next[vertex_id]] = prev[vertex_id];
         }
+	prev[vertex_id] = next[vertex_id] = _invalid;
     }
 
     void make_empty()
@@ -162,6 +163,24 @@ public:
         }
         return Item(jcol, v_priority[jcol]);
     }
+	
+    void printBucket()
+    {
+	cout<<"#Trace Head: ";
+	for(int i=1; i<=maxBucket; i++)
+		cout<<head[i]<<" ";
+	cout<<endl;
+	cout<<"#Trace Next: ";
+	for(int i=1; i<=numberOfItems; i++)
+		cout<<next[i]<<" ";
+	cout<<endl;
+
+	cout<<"#Trace Prev: ";
+	for(int i=1; i<=numberOfItems; i++)
+		cout<<prev[i]<<" ";
+	cout<<endl<<endl;
+	
+    }	
 };
 
 #endif

@@ -93,6 +93,11 @@ bool Matrix::computedegree()
                 }
             }
         }
+	//ndeg matrix o/p for tracing
+	cout<<endl<<"#Trace ndeg: ";
+	for(int i = 1; i<=N; i++)
+		cout<<ndeg[i]<<" ";
+	cout<<endl;	
     }
     catch(bad_alloc)
     {
@@ -244,7 +249,7 @@ bool Matrix::slo(int *list)
             tag[jp] = N;
             mindeg = min(mindeg,ndeg[jp]);
         }
-
+	priority_queue.printBucket();
         int maximalClique = 0; // Reset maximalClique. It will be set in the while loop
                            // only once.
         numord = N; // numord stores the ordering number for the next column to be
@@ -267,7 +272,8 @@ bool Matrix::slo(int *list)
             Item item = priority_queue.top();
             jcol = item.index;
             mindeg = item.priority;
-
+	    
+	    cout<<"#Trace jcol: "<<jcol<<" "<<endl;	
             priority_queue.pop();
 
             list[numord] = jcol;
@@ -310,6 +316,13 @@ bool Matrix::slo(int *list)
                     }
                 }
             }
+	 	
+	    cout<<endl<<"#Trace order: ";
+	    for(int i = 1; i<=N; i++)
+		cout<<list[i]<<" ";
+	    cout<<endl;
+	    priority_queue.printBucket();	
+	    cout<<endl;
         }
     }
     catch(bad_alloc) // for vector.reserve()
@@ -403,6 +416,23 @@ bool Matrix::ido(int *order )
 	    inducedDeg[jp] = ndeg[jp];	
         }
 
+	 cout<<endl<<"#Trace order: ";
+	    for(int i = 1; i<=N; i++)
+		cout<<order[i]<<" ";
+	    cout<<endl;
+	    cout<<"#Trace Head: ";
+	    for(int i=0; i<1; i++)
+		cout<<head[i]<<" ";
+	    cout<<endl;
+	    cout<<"#Trace Next: ";
+	    for(int i=1; i<=N; i++)
+		cout<<next[i]<<" ";
+	    cout<<endl;
+
+	    cout<<"#Trace Prev: ";
+	    for(int i=1; i<=N; i++)
+		cout<<previous[i]<<" ";
+	    cout<<endl<<endl;
         // determine the maximal search length to search for maximal degree in
         // the maximal incidence degree list.
         int maxLast = 0;
@@ -469,6 +499,7 @@ bool Matrix::ido(int *order )
 
 
             tag[jcol] = N;
+	    cout<<"#Trace jcol: "<<jcol<<" "<<endl;	
 
             // Find all columns adjacent to jcol
             for(int jp = jpntr[jcol] ; jp <= jpntr[jcol+1] -1; jp++)
@@ -499,6 +530,23 @@ bool Matrix::ido(int *order )
                     }
                 }
             }
+	    cout<<endl<<"#Trace order: ";
+	    for(int i = 1; i<=N; i++)
+		cout<<order[i]<<" ";
+	    cout<<endl;
+	    cout<<"#Trace Head: ";
+	    for(int i=0; i<=maxinc; i++)
+		cout<<head[i]<<" ";
+	    cout<<endl;
+	    cout<<"#Trace Next: ";
+	    for(int i=1; i<=N; i++)
+		cout<<next[i]<<" ";
+	    cout<<endl;
+
+	    cout<<"#Trace Prev: ";
+	    for(int i=1; i<=N; i++)
+		cout<<previous[i]<<" ";
+	    cout<<endl<<endl;
         }while(1);
 
         // Invert the integer array <id:order>

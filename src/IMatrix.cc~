@@ -59,7 +59,7 @@ void IMatrix::deleteColumn(int *head,int *next,int *previous,int numdeg,int jcol
     {
         previous[next[jcol]] = previous[jcol];
     }
-    next[jcol] = previous[jcol] = 0;	  
+    next[jcol] = prev[jcol] = 0;	  
 }
 
 /**

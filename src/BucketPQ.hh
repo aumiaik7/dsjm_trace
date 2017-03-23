@@ -6,6 +6,8 @@
 #include <cassert>
 #include <iostream>
 
+using namespace std;
+
 template <typename MinMaxQueue>
 class BucketPQ
 {
@@ -126,6 +128,7 @@ public:
         {
             prev[next[vertex_id]] = prev[vertex_id];
         }
+	prev[vertex_id] = next[vertex_id] = _invalid;
     }
 
     void make_empty()
@@ -160,6 +163,24 @@ public:
         }
         return Item(jcol, v_priority[jcol]);
     }
+	
+    void printBucket()
+    {
+	cout<<"#Trace Head: ";
+	for(int i=0; i<=maxBucket; i++)
+		cout<<head[i]<<" ";
+	cout<<endl;
+	cout<<"#Trace Next: ";
+	for(int i=1; i<=numberOfItems; i++)
+		cout<<next[i]<<" ";
+	cout<<endl;
+
+	cout<<"#Trace Prev: ";
+	for(int i=1; i<=numberOfItems; i++)
+		cout<<prev[i]<<" ";
+	cout<<endl<<endl;
+	
+    }	
 };
 
 #endif
