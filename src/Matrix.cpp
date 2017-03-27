@@ -68,7 +68,7 @@ bool Matrix::computedegree()
         {
             ndeg[jp] = 0;
             tag[jp] = 0;
-        }
+        } 
 
         // At each step, choose a column <id:jcol> and visit all
         // the adjacent columns to compute degree in the intersection graph
@@ -416,7 +416,7 @@ bool Matrix::ido(int *order )
 	    inducedDeg[jp] = ndeg[jp];	
         }
 
-	 cout<<endl<<"#Trace order: ";
+        cout<<endl<<"#Trace order: ";
 	    for(int i = 1; i<=N; i++)
 		cout<<order[i]<<" ";
 	    cout<<endl;
@@ -558,6 +558,10 @@ bool Matrix::ido(int *order )
         {
             order[jp] = previous[jp];
         }
+	cout<<"#Trace order: ";
+	    for(int i=1; i<=N; i++)
+		cout<<order[i]<<" ";
+	    cout<<endl<<endl;
 
     }
     catch (bad_alloc)
@@ -720,6 +724,10 @@ int Matrix::rlf(int *color)
                                    // have just picked a column for a new
                                    // color class or not. It stays true for
                                    // the first column in each color class.
+        cout<<"#Trace priority_queue"<<endl;
+        priority_queue.printBucket();
+        cout<<"#Trace u_queue"<<endl;
+        u_queue.printBucket();
 
         while(true)
         {
@@ -728,6 +736,7 @@ int Matrix::rlf(int *color)
 
             if (newColorClass == true)
             {
+                cout<<"#Trace new color"<<endl;
                 newColorClass = false;
 
                 // Choose a column jcol of maximal degree from
@@ -746,6 +755,7 @@ int Matrix::rlf(int *color)
                 jcol = item.index;
                 u_maxdeg = item.priority;
             }
+            cout<<"#Trace Selected jcol:--------------------"<<jcol<<endl;    
 
             // Update the number counters.
             countV--;
@@ -756,6 +766,11 @@ int Matrix::rlf(int *color)
             // class.
             color[jcol] = q;
             tag[jcol] = N;
+            
+            cout<<endl<<"#Trace color: ";
+            for(int i = 1; i<=N; i++)
+            cout<<color[i]<<" ";
+            cout<<endl;
 
             numord++;
 
@@ -823,8 +838,12 @@ int Matrix::rlf(int *color)
                         }
                     }
                 }
+                
             }
-
+            cout<<"#Trace priority_queue"<<endl;
+            priority_queue.printBucket();
+            cout<<"#Trace u_queue"<<endl<<endl;
+            u_queue.printBucket();
             // countV + countC + countU == N.
             // If countV = 0, the set of admissible columns  V is empty. We
             // start a new color class, and reset the priority queue for
@@ -847,6 +866,8 @@ int Matrix::rlf(int *color)
 
                 // Reset the priority queues for the elements in set U.
                 RLF::pq_initializeDegreesToUVertices(N,tag,u_queue,inU,u_tag);
+                cout<<"#Trace NEW u_queue"<<endl<<endl;
+                u_queue.printBucket();     
             }
         }
     }
@@ -1370,8 +1391,23 @@ int Matrix::sdo(int *color)
             color[jp] = N;
             seqTag[jp] = 0;
             *(bitsets+jp) = NULL; 
-	    inducedDeg[jp] = ndeg[jp];
+            inducedDeg[jp] = ndeg[jp];
         }
+        
+        
+	    cout<<"#Trace Head: ";
+	    for(int i=0; i<1; i++)
+		cout<<head[i]<<" ";
+	    cout<<endl;
+	    cout<<"#Trace Next: ";
+	    for(int i=1; i<=N; i++)
+		cout<<next[i]<<" ";
+	    cout<<endl;
+
+	    cout<<"#Trace Prev: ";
+	    for(int i=1; i<=N; i++)
+		cout<<previous[i]<<" ";
+	    cout<<endl<<endl;
 
         int maximalClique = 0;
         int numord = 1;
@@ -1406,11 +1442,11 @@ int Matrix::sdo(int *color)
             for(int numlst = 1,numwgt = -1;  numlst <= maxlst; numlst++)
             {
                 //if(ndeg[jp] > numwgt)
-		if(inducedDeg[jp] > numwgt)
+                if(inducedDeg[jp] > numwgt)
                 {
-                    //numwgt = ndeg[jp];
-		    numwgt = inducedDeg[jp];	
-                    jcol = jp;
+                            //numwgt = ndeg[jp];
+                    numwgt = inducedDeg[jp];	
+                            jcol = jp;
                 }
                 jp = next[jp];
                 if(jp <= 0)
@@ -1453,6 +1489,12 @@ int Matrix::sdo(int *color)
 
         //SDO_L50:
             color[jcol] = newColor;
+            
+            cout<<endl<<"#Trace jcol:              "<<jcol<<endl;
+            cout<<endl<<"#Trace color: ";
+            for(int i = 1; i<=N; i++)
+            cout<<color[i]<<" ";
+            cout<<endl;
             (*(bitsets+newColor))->set(jcol); 
 
             satDeg[jcol] = numord;
@@ -1505,10 +1547,10 @@ int Matrix::sdo(int *color)
                         // // ========================================
                         // SDO_ISNEWCOLOR:
                         //bool isNewColor = (*(bitsets+newColor))->test(jcol); 
-			bool isNewColor = (*(bitsets+newColor))->test(ic); 
+                        bool isNewColor = (*(bitsets+newColor))->test(ic); 
                         if(!isNewColor)
                         {
-			    (*(bitsets+newColor))->set(ic); 	
+                            (*(bitsets+newColor))->set(ic); 	
                             // update the pointers to the current saturation
                             // degree lists.
                             satDeg[ic]++;
@@ -1518,10 +1560,28 @@ int Matrix::sdo(int *color)
                             deleteColumn(head,next,previous,satDeg[ic]-1,ic);
                             addColumn(head,next,previous,satDeg[ic],ic);
                         }
-			inducedDeg[ic] = inducedDeg[ic] - 1; 
+                        inducedDeg[ic] = inducedDeg[ic] - 1; 
                     }
                 }
             }
+            
+            
+        cout<<"#Trace ideg: ";
+	    for(int i=1; i<=N; i++)
+		cout<<inducedDeg[i]<<" ";
+	    cout<<endl;       
+	    cout<<"#Trace Head: ";
+	    for(int i=0; i<=maxsat; i++)
+		cout<<head[i]<<" ";
+	    cout<<endl;
+	    cout<<"#Trace Next: ";
+	    for(int i=1; i<=N; i++)
+		cout<<next[i]<<" ";
+	    cout<<endl;
+	    cout<<"#Trace Prev: ";
+	    for(int i=1; i<=N; i++)
+		cout<<previous[i]<<" ";
+	    cout<<endl<<endl;
 
         }
     }

@@ -421,7 +421,7 @@ bool Matrix::ido(int *order )
 		cout<<order[i]<<" ";
 	    cout<<endl;
 	    cout<<"#Trace Head: ";
-	    for(int i=0; i<=maxinc; i++)
+	    for(int i=0; i<1; i++)
 		cout<<head[i]<<" ";
 	    cout<<endl;
 	    cout<<"#Trace Next: ";
