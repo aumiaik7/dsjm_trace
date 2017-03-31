@@ -94,9 +94,14 @@ bool Matrix::computedegree()
             }
         }
 	//ndeg matrix o/p for tracing
-	cout<<endl<<"#Trace ndeg: ";
+    int degreeSum=0;
+	cout<<endl<<"#Trace ndeg ";
 	for(int i = 1; i<=N; i++)
-		cout<<ndeg[i]<<" ";
+    {
+     //   cout<<ndeg[i]<<" ";
+        degreeSum+=ndeg[i];
+    }
+    cout<<" sum : "<<degreeSum/2;        
 	cout<<endl;	
     }
     catch(bad_alloc)
@@ -249,13 +254,14 @@ bool Matrix::slo(int *list)
             tag[jp] = N;
             mindeg = min(mindeg,ndeg[jp]);
         }
-	priority_queue.printBucket();
+        //Trace
+	//priority_queue.printBucket();
         int maximalClique = 0; // Reset maximalClique. It will be set in the while loop
                            // only once.
         numord = N; // numord stores the ordering number for the next column to be
                     // processed. It also indicates the number of columns remaining
                     // to be processed.
-
+        int stepCounter=0;
         while(1)
         {
             int ic,ip, ir, jcol, jp, numdeg;
@@ -266,6 +272,7 @@ bool Matrix::slo(int *list)
             if ((mindeg +1 == numord ) && (maximalClique == 0) )
             {
                 maximalClique = numord;
+                cout<<"#Trace maxClique :"<<maximalClique<<endl;
             }
 
             // find column jcol with minimal degree
@@ -273,7 +280,7 @@ bool Matrix::slo(int *list)
             jcol = item.index;
             mindeg = item.priority;
 	    
-	    cout<<"#Trace jcol: "<<jcol<<" "<<endl;	
+	   // cout<<"#Trace jcol: "<<jcol<<" "<<endl;	
             priority_queue.pop();
 
             list[numord] = jcol;
@@ -282,6 +289,7 @@ bool Matrix::slo(int *list)
             // when numord = 0, we have already processed all the columns
             if (numord == 0)
             {
+                  cout<<"#Trace step counter: "<<stepCounter<<endl;    
                 return true;
             }
 
@@ -289,7 +297,7 @@ bool Matrix::slo(int *list)
 
 
             // Determine all nonzero entries (ir,jcol)
-
+            
 
             for(jp = jpntr[jcol]; jp <= jpntr[jcol+1] -1;jp++)
             {
@@ -312,18 +320,21 @@ bool Matrix::slo(int *list)
                         priority_queue.decrease(ic);
                         numdeg = priority_queue.get(ic).priority;
                         mindeg = min(mindeg,numdeg);
+                        stepCounter++;    
+                       // cout<<"#Trace step counter: "<<stepCounter<<endl;
 
                     }
                 }
             }
 	 	
-	    cout<<endl<<"#Trace order: ";
-	    for(int i = 1; i<=N; i++)
-		cout<<list[i]<<" ";
-	    cout<<endl;
-	    priority_queue.printBucket();	
-	    cout<<endl;
+	    //cout<<endl<<"#Trace order: ";
+	    //for(int i = 1; i<=N; i++)
+		//cout<<list[i]<<" ";
+	    //cout<<endl;
+	    //priority_queue.printBucket();	
+	    //cout<<endl;
         }
+       
     }
     catch(bad_alloc) // for vector.reserve()
     {
@@ -413,10 +424,10 @@ bool Matrix::ido(int *order )
 
             tag[jp] = 0;
             order[jp] = 0;
-	    inducedDeg[jp] = ndeg[jp];	
+            inducedDeg[jp] = ndeg[jp];
         }
 
-        cout<<endl<<"#Trace order: ";
+        /*cout<<endl<<"#Trace order: ";
 	    for(int i = 1; i<=N; i++)
 		cout<<order[i]<<" ";
 	    cout<<endl;
@@ -433,6 +444,7 @@ bool Matrix::ido(int *order )
 	    for(int i=1; i<=N; i++)
 		cout<<previous[i]<<" ";
 	    cout<<endl<<endl;
+        */
         // determine the maximal search length to search for maximal degree in
         // the maximal incidence degree list.
         int maxLast = 0;
@@ -440,13 +452,15 @@ bool Matrix::ido(int *order )
         {
             maxLast = maxLast + MatrixUtility::square(ipntr[ir+1] - ipntr[ir]);
         }
+        //cout<<"#Trace maxlast: "<<maxLast<<endl;
         maxLast = maxLast/N;
-
+        //cout<<"#Trace maxlast: "<<maxLast<<endl;
         int maximalClique = 0;
 
         int maxinc = 0;
         int ncomp;
         int numord = 1;
+        int stepCounter = 0;
         do
         {
             // update the size of the largest clique
@@ -455,7 +469,10 @@ bool Matrix::ido(int *order )
                 ncomp = 0;
             ncomp = ncomp + 1;
             if (maxinc + 1 == ncomp)
-                maximalClique = max(maximalClique,ncomp);
+            {
+                   maximalClique = max(maximalClique,ncomp);
+                //cout<<"#Trace maxclique: "<<maximalClique<<endl;
+            }
 
 
             // choose a column jcol of maximal incidence degree
@@ -472,15 +489,16 @@ bool Matrix::ido(int *order )
 
                 // We search a distance of maxLast length to find the column with
                 // maximal degree in the original graph.
-                for(int numlst = 1,  numwgt = -1; numlst <= maxLast; numlst++)
+                for(int numlst = 1,  numwgt = -1; numlst <= maxLast ; numlst++)
                 {
                     //if (ndeg[jp] > numwgt)
-		    if (inducedDeg[jp] > numwgt)	
+                    if (inducedDeg[jp] > numwgt)	
                     {
                         //numwgt = ndeg[jp];
-			numwgt = inducedDeg[jp];
+                        numwgt = inducedDeg[jp];
                         jcol = jp;
                     }
+                    stepCounter++;
                     jp = next[jp];
                     if (jp <= 0)
                         break;
@@ -499,7 +517,7 @@ bool Matrix::ido(int *order )
 
 
             tag[jcol] = N;
-	    cout<<"#Trace jcol: "<<jcol<<" "<<endl;	
+	    //cout<<"#Trace jcol: "<<jcol<<" "<<endl;	
 
             // Find all columns adjacent to jcol
             for(int jp = jpntr[jcol] ; jp <= jpntr[jcol+1] -1; jp++)
@@ -522,15 +540,17 @@ bool Matrix::ido(int *order )
 
                         // delete column ic from the incidence list.
                         deleteColumn(head,next,previous,incidence,ic);
-
+            
 
                         // add column ic to the incidence+1 list.
                         addColumn(head,next,previous,incidence+1,ic);
-			inducedDeg[ic] = inducedDeg[ic] - 1; 
+                        inducedDeg[ic] = inducedDeg[ic] - 1; 
+                        stepCounter++;    
                     }
                 }
             }
-	    cout<<endl<<"#Trace order: ";
+            
+	    /*cout<<endl<<"#Trace order: ";
 	    for(int i = 1; i<=N; i++)
 		cout<<order[i]<<" ";
 	    cout<<endl;
@@ -547,7 +567,9 @@ bool Matrix::ido(int *order )
 	    for(int i=1; i<=N; i++)
 		cout<<previous[i]<<" ";
 	    cout<<endl<<endl;
+        */
         }while(1);
+        cout<<endl<<"#Trace steps: "<<stepCounter<<endl;
 
         // Invert the integer array <id:order>
         for(int jcol = 1;jcol<= N; jcol++)
@@ -558,10 +580,12 @@ bool Matrix::ido(int *order )
         {
             order[jp] = previous[jp];
         }
-	cout<<"#Trace order: ";
+	
+        /*cout<<"#Trace order: ";
 	    for(int i=1; i<=N; i++)
 		cout<<order[i]<<" ";
 	    cout<<endl<<endl;
+        */
 
     }
     catch (bad_alloc)
