@@ -454,13 +454,15 @@ bool Matrix::ido(int *order )
         }
         //cout<<"#Trace maxlast: "<<maxLast<<endl;
         maxLast = maxLast/N;
-        //cout<<"#Trace maxlast: "<<maxLast<<endl;
+        cout<<"#Trace maxlast: "<<maxLast<<endl;
         int maximalClique = 0;
 
         int maxinc = 0;
         int ncomp;
         int numord = 1;
-        int stepCounter = 0;
+	int stepCounter = 0;
+        int stepCounterM = 0;
+	
         do
         {
             // update the size of the largest clique
@@ -478,6 +480,7 @@ bool Matrix::ido(int *order )
             // choose a column jcol of maximal incidence degree
             int jcol;
             {
+		//cout<<"#Trace maxinc: "<<maxinc<<endl;
                 int jp;
                 do{
                     jp = head[maxinc];
@@ -498,7 +501,8 @@ bool Matrix::ido(int *order )
                         numwgt = inducedDeg[jp];
                         jcol = jp;
                     }
-                    stepCounter++;
+                    stepCounterM++;
+		    //cout<<" #Trace StepCounter :"<<stepCounter<<" ";	
                     jp = next[jp];
                     if (jp <= 0)
                         break;
@@ -569,7 +573,7 @@ bool Matrix::ido(int *order )
 	    cout<<endl<<endl;
         */
         }while(1);
-        cout<<endl<<"#Trace steps: "<<stepCounter<<endl;
+        cout<<endl<<"#Trace steps: "<<stepCounter<<" stepCountM: "<<stepCounterM<<endl;
 
         // Invert the integer array <id:order>
         for(int jcol = 1;jcol<= N; jcol++)
@@ -1390,6 +1394,8 @@ int Matrix::sdo(int *color)
 
         bitsets = new boost::dynamic_bitset<>*[N+1]; 
 
+	int stepM = 0, stepCol=0,stepCounter=0;
+
 
 
 
@@ -1418,7 +1424,7 @@ int Matrix::sdo(int *color)
             inducedDeg[jp] = ndeg[jp];
         }
         
-        
+        /*
 	    cout<<"#Trace Head: ";
 	    for(int i=0; i<1; i++)
 		cout<<head[i]<<" ";
@@ -1432,7 +1438,7 @@ int Matrix::sdo(int *color)
 	    for(int i=1; i<=N; i++)
 		cout<<previous[i]<<" ";
 	    cout<<endl<<endl;
-
+	*/
         int maximalClique = 0;
         int numord = 1;
 
@@ -1473,6 +1479,7 @@ int Matrix::sdo(int *color)
                             jcol = jp;
                 }
                 jp = next[jp];
+		stepM++;
                 if(jp <= 0)
                     break;
             }
@@ -1489,6 +1496,7 @@ int Matrix::sdo(int *color)
                 {
                     int ic = col_ind[ip];
                     seqTag[color[ic]] = jcol;
+		    stepCol++;	
                 }
             }
 
@@ -1514,11 +1522,12 @@ int Matrix::sdo(int *color)
         //SDO_L50:
             color[jcol] = newColor;
             
-            cout<<endl<<"#Trace jcol:              "<<jcol<<endl;
+            /*cout<<endl<<"#Trace jcol:              "<<jcol<<endl;
             cout<<endl<<"#Trace color: ";
             for(int i = 1; i<=N; i++)
             cout<<color[i]<<" ";
             cout<<endl;
+	*/
             (*(bitsets+newColor))->set(jcol); 
 
             satDeg[jcol] = numord;
@@ -1527,6 +1536,7 @@ int Matrix::sdo(int *color)
             // Termination Test.
             if(numord > N)
             {
+		cout<<endl<<"#Trace steps: "<<stepCounter<<" stepM: "<<stepM<<" stepCol: "<<stepCol<<endl;
                 break;
             }
 
@@ -1585,12 +1595,13 @@ int Matrix::sdo(int *color)
                             addColumn(head,next,previous,satDeg[ic],ic);
                         }
                         inducedDeg[ic] = inducedDeg[ic] - 1; 
+			stepCounter++;
                     }
                 }
             }
             
             
-        cout<<"#Trace ideg: ";
+        /*cout<<"#Trace ideg: ";
 	    for(int i=1; i<=N; i++)
 		cout<<inducedDeg[i]<<" ";
 	    cout<<endl;       
@@ -1606,7 +1617,7 @@ int Matrix::sdo(int *color)
 	    for(int i=1; i<=N; i++)
 		cout<<previous[i]<<" ";
 	    cout<<endl<<endl;
-
+*/
         }
     }
     catch(std::bad_alloc)
