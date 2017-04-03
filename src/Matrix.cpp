@@ -752,10 +752,12 @@ int Matrix::rlf(int *color)
                                    // have just picked a column for a new
                                    // color class or not. It stays true for
                                    // the first column in each color class.
-        cout<<"#Trace priority_queue"<<endl;
+        /*cout<<"#Trace priority_queue"<<endl;
         priority_queue.printBucket();
         cout<<"#Trace u_queue"<<endl;
         u_queue.printBucket();
+        */
+        int stepCount = 0, stepcountU = 0;
 
         while(true)
         {
@@ -764,7 +766,7 @@ int Matrix::rlf(int *color)
 
             if (newColorClass == true)
             {
-                cout<<"#Trace new color"<<endl;
+                //cout<<"#Trace new color"<<endl;
                 newColorClass = false;
 
                 // Choose a column jcol of maximal degree from
@@ -783,7 +785,7 @@ int Matrix::rlf(int *color)
                 jcol = item.index;
                 u_maxdeg = item.priority;
             }
-            cout<<"#Trace Selected jcol:--------------------"<<jcol<<endl;    
+            //cout<<"#Trace Selected jcol:--------------------"<<jcol<<endl;    
 
             // Update the number counters.
             countV--;
@@ -795,11 +797,11 @@ int Matrix::rlf(int *color)
             color[jcol] = q;
             tag[jcol] = N;
             
-            cout<<endl<<"#Trace color: ";
+            /*cout<<endl<<"#Trace color: ";
             for(int i = 1; i<=N; i++)
             cout<<color[i]<<" ";
             cout<<endl;
-
+            */
             numord++;
 
             // Termination Test.
@@ -815,6 +817,8 @@ int Matrix::rlf(int *color)
 
                 if(blackList) delete[] blackList;
                 numberOfColors = q;
+                
+                cout<<"#Trace stepCount :"<<stepCount<<endl;
                 return q;
             }
 
@@ -862,16 +866,18 @@ int Matrix::rlf(int *color)
                             // Update the U_degrees of the adjacent vertices.
                             u_maxdeg = RLF::pq_updateDegreesToUVertices(N,ic,u_maxdeg, jpntr,row_ind,ipntr,col_ind,inU,
                                                                         tag,u_tag,u_queue,blackList,q);
-
+                            
                         }
+                        stepCount++;
                     }
                 }
                 
             }
-            cout<<"#Trace priority_queue"<<endl;
+            /*cout<<"#Trace priority_queue"<<endl;
             priority_queue.printBucket();
             cout<<"#Trace u_queue"<<endl<<endl;
             u_queue.printBucket();
+            */
             // countV + countC + countU == N.
             // If countV = 0, the set of admissible columns  V is empty. We
             // start a new color class, and reset the priority queue for
@@ -894,8 +900,8 @@ int Matrix::rlf(int *color)
 
                 // Reset the priority queues for the elements in set U.
                 RLF::pq_initializeDegreesToUVertices(N,tag,u_queue,inU,u_tag);
-                cout<<"#Trace NEW u_queue"<<endl<<endl;
-                u_queue.printBucket();     
+                //cout<<"#Trace NEW u_queue"<<endl<<endl;
+                //u_queue.printBucket();     
             }
         }
     }
